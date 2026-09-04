@@ -11,12 +11,11 @@ import {
 } from 'lucide-react';
 
 export const ExportModal = ({ isOpen, onClose, activeSession }) => {
-  if (!isOpen || !activeSession) return null;
-
   const [format, setFormat] = useState('markdown'); // 'markdown' | 'json' | 'text'
   const [copied, setCopied] = useState(false);
 
   const exportContent = useMemo(() => {
+    if (!activeSession) return '';
     if (format === 'json') {
       return JSON.stringify(activeSession, null, 2);
     }
@@ -67,6 +66,8 @@ export const ExportModal = ({ isOpen, onClose, activeSession }) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  if (!isOpen || !activeSession) return null;
 
   return (
     <div className="modal-backdrop" onClick={onClose}>

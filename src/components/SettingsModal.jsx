@@ -9,12 +9,8 @@ import {
   RotateCcw,
   CheckCircle2,
   AlertCircle,
-  Clock,
   Sparkles,
-  Zap,
-  Info,
   ExternalLink,
-  Code,
   Palette
 } from 'lucide-react';
 import { DEFAULT_SETTINGS } from '../services/storageService';
@@ -30,13 +26,13 @@ export const SettingsModal = ({
   currentTheme,
   onChangeTheme
 }) => {
-  if (!isOpen) return null;
-
   const [formData, setFormData] = useState({ ...settings });
   const [activeTab, setActiveTab] = useState('webhook'); // 'webhook' | 'payload' | 'advanced' | 'appearance'
   const [testResult, setTestResult] = useState(null);
   const [isTesting, setIsTesting] = useState(false);
   const [saveToast, setSaveToast] = useState(false);
+
+  if (!isOpen) return null;
 
   const handleChange = (key, value) => {
     setFormData((prev) => ({ ...prev, [key]: value }));

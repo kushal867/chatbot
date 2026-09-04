@@ -14,9 +14,9 @@ import {
 import { CodeBlock } from './MarkdownRenderer';
 
 export const WorkflowGuideModal = ({ isOpen, onClose, onConfigureWebhook }) => {
-  if (!isOpen) return null;
-
   const [copiedWorkflow, setCopiedWorkflow] = useState(false);
+
+  if (!isOpen) return null;
 
   // Exact matching n8n workflow JSON ready for direct copy-paste into n8n canvas
   const sampleN8nWorkflow = JSON.stringify(
