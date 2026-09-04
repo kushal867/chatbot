@@ -15,8 +15,14 @@ import {
   BookOpen,
   Share2,
   HardDrive,
-  Workflow
+  Workflow,
+  Palette,
+  ChevronUp,
+  ChevronDown,
+  Sparkles
 } from 'lucide-react';
+import ThemeSelector from './ThemeSelector';
+import { AVAILABLE_THEMES } from '../services/storageService';
 
 export const Sidebar = ({
   sessions,
@@ -39,6 +45,11 @@ export const Sidebar = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+
+  const activeThemeMeta = useMemo(() => {
+    return AVAILABLE_THEMES.find((t) => t.id === currentTheme) || AVAILABLE_THEMES[0];
+  }, [currentTheme]);
 
   // Group sessions by date
   const filteredSessions = useMemo(() => {
@@ -343,25 +354,40 @@ export const Sidebar = ({
           <span>Settings</span>
         </button>
 
-        {/* Theme toggler */}
-        <div className="theme-toggle-row">
+        {/* Theme Drawer & Trigger Button */}
+        <div className="theme-sidebar-section">
           <button
-            onClick={() => onChangeTheme(currentTheme === 'dark' ? 'light' : 'dark')}
-            className="theme-switch-btn"
-            title={`Switch to ${currentTheme === 'dark' ? 'Light' : 'Dark'} theme`}
+            type="button"
+            onClick={() => setIsThemeMenuOpen((prev) => !prev)}
+            className={`theme-switch-btn ${isThemeMenuOpen ? 'theme-switch-btn-active' : ''}`}
+            title="Change Theme & Aesthetics"
+            aria-expanded={isThemeMenuOpen}
           >
-            {currentTheme === 'dark' ? (
-              <>
-                <Sun size={15} />
-                <span>Light Mode</span>
-              </>
-            ) : (
-              <>
-                <Moon size={15} />
-                <span>Dark Mode</span>
-              </>
-            )}
+            <div className="theme-btn-left">
+              <span
+                className="theme-btn-dot"
+                style={{
+                  background: `linear-gradient(135deg, ${activeThemeMeta.preview.accent}, ${activeThemeMeta.preview.secondary})`
+                }}
+              />
+              <span className="theme-btn-label">{activeThemeMeta.name}</span>
+            </div>
+            <div className="theme-btn-right">
+              {activeThemeMeta.isDark ? <Moon size={13} /> : <Sun size={13} />}
+              {isThemeMenuOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+            </div>
           </button>
+
+          {isThemeMenuOpen && (
+            <div className="theme-drawer-popup">
+              <ThemeSelector
+                currentTheme={currentTheme}
+                onChangeTheme={onChangeTheme}
+                layout="drawer"
+                onSelect={() => setIsThemeMenuOpen(false)}
+              />
+            </div>
+          )}
         </div>
       </div>
     </aside>

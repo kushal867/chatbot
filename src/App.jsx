@@ -329,6 +329,13 @@ export function App() {
 
   return (
     <div className="app-layout">
+      {/* Ambient Animated Glow Mesh Background */}
+      <div className="ambient-background-layer" aria-hidden="true">
+        <div className="ambient-orb ambient-orb-1" />
+        <div className="ambient-orb ambient-orb-2" />
+        <div className="ambient-orb ambient-orb-3" />
+      </div>
+
       {/* Mobile Overlay */}
       {isMobileSidebarOpen && (
         <div
@@ -380,6 +387,8 @@ export function App() {
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
         onSaveSettings={handleSaveSettings}
+        currentTheme={theme}
+        onChangeTheme={handleChangeTheme}
         onOpenWorkflowGuide={() => {
           setIsSettingsOpen(false);
           setIsWorkflowGuideOpen(true);

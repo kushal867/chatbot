@@ -14,22 +14,26 @@ import {
   Zap,
   Info,
   ExternalLink,
-  Code
+  Code,
+  Palette
 } from 'lucide-react';
 import { DEFAULT_SETTINGS } from '../services/storageService';
 import { testN8nConnection } from '../services/n8nService';
+import ThemeSelector from './ThemeSelector';
 
 export const SettingsModal = ({
   isOpen,
   onClose,
   settings,
   onSaveSettings,
-  onOpenWorkflowGuide
+  onOpenWorkflowGuide,
+  currentTheme,
+  onChangeTheme
 }) => {
   if (!isOpen) return null;
 
   const [formData, setFormData] = useState({ ...settings });
-  const [activeTab, setActiveTab] = useState('webhook'); // 'webhook' | 'payload' | 'advanced'
+  const [activeTab, setActiveTab] = useState('webhook'); // 'webhook' | 'payload' | 'advanced' | 'appearance'
   const [testResult, setTestResult] = useState(null);
   const [isTesting, setIsTesting] = useState(false);
   const [saveToast, setSaveToast] = useState(false);
@@ -73,7 +77,7 @@ export const SettingsModal = ({
             </div>
             <div>
               <h2 className="modal-title">n8n Webhook Settings</h2>
-              <p className="modal-subtitle">Configure endpoint, authentication headers, and workflow payload</p>
+              <p className="modal-subtitle">Configure endpoint, authentication headers, themes, and workflow payload</p>
             </div>
           </div>
           <button onClick={onClose} className="modal-close-btn" title="Close">
@@ -88,7 +92,7 @@ export const SettingsModal = ({
             className={`tab-btn ${activeTab === 'webhook' ? 'tab-active' : ''}`}
           >
             <Link size={15} />
-            <span>Webhook Connection</span>
+            <span>Webhook</span>
           </button>
           <button
             onClick={() => setActiveTab('payload')}
@@ -96,6 +100,13 @@ export const SettingsModal = ({
           >
             <Sliders size={15} />
             <span>Payload & Agent</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('appearance')}
+            className={`tab-btn ${activeTab === 'appearance' ? 'tab-active' : ''}`}
+          >
+            <Palette size={15} />
+            <span>Themes & Style</span>
           </button>
           <button
             onClick={() => setActiveTab('advanced')}
@@ -372,6 +383,59 @@ export const SettingsModal = ({
                 <span className="form-caption">
                   Allows n8n AI workflows and agent tool executions sufficient time to complete without timing out.
                 </span>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: THEMES & APPEARANCE */}
+          {activeTab === 'appearance' && (
+            <div className="settings-section">
+              <div className="settings-section-header">
+                <h4 className="settings-section-title">Luxury Color Themes</h4>
+                <p className="settings-section-desc">
+                  Select a theme designed with high-contrast typography, frosted glassmorphism, and custom ambient glows.
+                </p>
+              </div>
+
+              {/* Theme Grid */}
+              <ThemeSelector
+                currentTheme={currentTheme}
+                onChangeTheme={onChangeTheme}
+                layout="grid"
+              />
+
+              <div className="appearance-toggles-grid">
+                {/* Auto Scroll Toggle */}
+                <div className="setting-toggle-card">
+                  <div className="toggle-meta">
+                    <span className="toggle-title">Smooth Auto-Scroll</span>
+                    <span className="toggle-desc">Automatically scroll down as new tokens and responses stream in</span>
+                  </div>
+                  <label className="switch-toggle">
+                    <input
+                      type="checkbox"
+                      checked={formData.autoScroll !== false}
+                      onChange={(e) => handleChange('autoScroll', e.target.checked)}
+                    />
+                    <span className="slider-round"></span>
+                  </label>
+                </div>
+
+                {/* Simulated Streaming Toggle */}
+                <div className="setting-toggle-card">
+                  <div className="toggle-meta">
+                    <span className="toggle-title">Simulate Natural Streaming</span>
+                    <span className="toggle-desc">Render incoming n8n replies with human-paced natural typing rhythm</span>
+                  </div>
+                  <label className="switch-toggle">
+                    <input
+                      type="checkbox"
+                      checked={formData.streamSimulation !== false}
+                      onChange={(e) => handleChange('streamSimulation', e.target.checked)}
+                    />
+                    <span className="slider-round"></span>
+                  </label>
+                </div>
               </div>
             </div>
           )}

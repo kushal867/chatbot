@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Menu,
   Settings,
@@ -32,6 +32,7 @@ export const ChatArea = ({
 }) => {
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
 
   // Auto-scroll on new messages or loading state
   useEffect(() => {
@@ -39,6 +40,18 @@ export const ChatArea = ({
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [session?.messages, isLoading, settings.autoScroll]);
+
+  // Handle scroll position detection for scroll-to-bottom button
+  const handleScroll = () => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    setShowScrollBottom(!isNearBottom);
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const messages = session?.messages || [];
   const isEmptyState = messages.length <= 1; // only welcome message or empty
@@ -145,7 +158,7 @@ export const ChatArea = ({
       </header>
 
       {/* Messages Scroll Area */}
-      <div className="chat-messages-viewport" ref={scrollContainerRef}>
+      <div className="chat-messages-viewport" ref={scrollContainerRef} onScroll={handleScroll}>
         <div className="chat-messages-inner">
           {/* Welcome Screen Cards if conversation is fresh */}
           {isEmptyState && (
@@ -220,6 +233,20 @@ export const ChatArea = ({
 
           <div ref={messagesEndRef} className="scroll-anchor" />
         </div>
+
+        {/* Floating Scroll to Bottom Button */}
+        {showScrollBottom && (
+          <button
+            type="button"
+            onClick={scrollToBottom}
+            className="floating-scroll-bottom-btn"
+            title="Scroll to latest message"
+            aria-label="Scroll to bottom"
+          >
+            <ArrowDown size={16} />
+            <span>Latest</span>
+          </button>
+        )}
       </div>
 
       {/* Input Tray */}

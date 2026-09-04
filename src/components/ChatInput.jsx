@@ -255,7 +255,14 @@ export const ChatInput = ({
             title={isRecording ? 'Stop voice recording' : 'Voice dictation'}
             aria-label="Voice input"
           >
-            {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
+            {isRecording ? (
+              <div className="mic-recording-wrap">
+                <span className="mic-pulse-ring" />
+                <MicOff size={18} />
+              </div>
+            ) : (
+              <Mic size={18} />
+            )}
           </button>
 
           {/* Send / Stop button */}
@@ -287,14 +294,20 @@ export const ChatInput = ({
         <div className="input-card-footer">
           <div className="input-hints">
             <span className="hint-pill">
-              <strong>Enter</strong> to send
+              <kbd>Enter</kbd> send
             </span>
             <span className="hint-pill">
-              <strong>Shift + Enter</strong> new line
+              <kbd>Shift + Enter</kbd> new line
             </span>
           </div>
           <div className="input-char-count">
-            {text.length > 0 && <span>{text.length} chars</span>}
+            {text.length > 0 && (
+              <>
+                <span className="count-tag">{text.length} chars</span>
+                <span className="count-separator">•</span>
+                <span className="count-tag">~{Math.max(1, Math.ceil(text.length / 4))} tokens</span>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -105,11 +105,97 @@ export const saveSettings = (settings) => {
   }
 };
 
+export const AVAILABLE_THEMES = [
+  {
+    id: 'midnight',
+    name: 'Midnight Nebula',
+    subtitle: 'Deep obsidian & indigo cosmic glow',
+    isDark: true,
+    preview: {
+      bg: '#070a13',
+      surface: '#0f1629',
+      accent: '#6366f1',
+      secondary: '#06b6d4',
+      border: 'rgba(99, 102, 241, 0.4)'
+    }
+  },
+  {
+    id: 'opal',
+    name: 'Clean Opal',
+    subtitle: 'Frosted porcelain & slate clarity',
+    isDark: false,
+    preview: {
+      bg: '#f8fafc',
+      surface: '#ffffff',
+      accent: '#4f46e5',
+      secondary: '#0284c7',
+      border: 'rgba(79, 70, 229, 0.3)'
+    }
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk Neon',
+    subtitle: 'Pitch black with neon cyan & magenta laser',
+    isDark: true,
+    preview: {
+      bg: '#05050a',
+      surface: '#0d0d18',
+      accent: '#00f0ff',
+      secondary: '#ff007f',
+      border: 'rgba(0, 240, 255, 0.5)'
+    }
+  },
+  {
+    id: 'nordic',
+    name: 'Nordic Aurora',
+    subtitle: 'Deep Arctic polar navy & boreal teal',
+    isDark: true,
+    preview: {
+      bg: '#06101e',
+      surface: '#0c1a2e',
+      accent: '#14b8a6',
+      secondary: '#38bdf8',
+      border: 'rgba(20, 184, 166, 0.4)'
+    }
+  },
+  {
+    id: 'amethyst',
+    name: 'Royal Amethyst',
+    subtitle: 'Velvet imperial purple & electric violet',
+    isDark: true,
+    preview: {
+      bg: '#0c0717',
+      surface: '#170f2c',
+      accent: '#a855f7',
+      secondary: '#ec4899',
+      border: 'rgba(168, 85, 247, 0.45)'
+    }
+  },
+  {
+    id: 'emerald',
+    name: 'Emerald Cyber',
+    subtitle: 'Carbon matrix dark & neon mint glow',
+    isDark: true,
+    preview: {
+      bg: '#05110a',
+      surface: '#0a1d13',
+      accent: '#10b981',
+      secondary: '#34d399',
+      border: 'rgba(16, 185, 129, 0.45)'
+    }
+  }
+];
+
 export const getTheme = () => {
   try {
-    return localStorage.getItem(THEME_KEY) || 'dark';
+    const stored = localStorage.getItem(THEME_KEY);
+    if (!stored) return 'midnight';
+    // Migration for legacy themes
+    if (stored === 'dark') return 'midnight';
+    if (stored === 'light') return 'opal';
+    return stored;
   } catch {
-    return 'dark';
+    return 'midnight';
   }
 };
 

@@ -103,7 +103,16 @@ export const ChatMessage = ({
             {formatTimestamp(message.timestamp)}
           </span>
           {message.latency && (
-            <span className="message-latency" title={`Response time: ${message.latency}s`}>
+            <span
+              className={`message-latency ${
+                Number(message.latency) < 1.2
+                  ? 'latency-fast'
+                  : Number(message.latency) < 3.5
+                  ? 'latency-med'
+                  : 'latency-slow'
+              }`}
+              title={`Response time: ${message.latency}s`}
+            >
               <Zap size={11} />
               {message.latency}s
             </span>
@@ -157,7 +166,7 @@ export const ChatMessage = ({
                   onClick={() => onPromptClick && onPromptClick(suggestion)}
                   className="suggestion-pill"
                 >
-                  {suggestion}
+                  <span>{suggestion}</span>
                 </button>
               ))}
             </div>
@@ -169,7 +178,7 @@ export const ChatMessage = ({
           <div className="message-actions-bar">
             <button
               onClick={handleCopy}
-              className="action-btn"
+              className={`action-btn ${copied ? 'action-btn-success' : ''}`}
               title="Copy message to clipboard"
               aria-label="Copy message"
             >
@@ -183,8 +192,22 @@ export const ChatMessage = ({
               title={isSpeaking ? 'Stop speaking' : 'Read message aloud'}
               aria-label="Read aloud"
             >
-              {isSpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
-              <span>{isSpeaking ? 'Stop' : 'Speak'}</span>
+              {isSpeaking ? (
+                <>
+                  <VolumeX size={14} />
+                  <span className="speaking-wave-dots">
+                    <span className="wave-bar bar-1" />
+                    <span className="wave-bar bar-2" />
+                    <span className="wave-bar bar-3" />
+                  </span>
+                  <span>Stop</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={14} />
+                  <span>Speak</span>
+                </>
+              )}
             </button>
 
             {isLatestAssistantMessage && onRegenerate && (
@@ -201,14 +224,16 @@ export const ChatMessage = ({
           </div>
         )}
 
-        {isUser && onRegenerate && (
+        {isUser && (
           <div className="message-actions-bar user-actions">
             <button
               onClick={handleCopy}
-              className="action-btn"
+              className={`action-btn ${copied ? 'action-btn-success' : ''}`}
               title="Copy prompt"
+              aria-label="Copy prompt"
             >
               {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+              <span>{copied ? 'Copied' : 'Copy'}</span>
             </button>
           </div>
         )}
